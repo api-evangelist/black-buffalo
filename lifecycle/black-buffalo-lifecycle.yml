@@ -1,0 +1,116 @@
+generated: '2026-08-07'
+method: probed
+source: 'https://blackbuffalo.com/api/2026-04/graphql.json (query publicApiVersions)'
+description: >-
+  Black Buffalo itself publishes no API versioning, deprecation or SLA policy, and runs
+  no status page. The versioning contract that actually governs the surfaces served from
+  blackbuffalo.com is Shopify's, and it is machine-readable: the publicApiVersions query
+  on Black Buffalo's own endpoint returns the live support matrix, captured verbatim
+  below on 2026-08-07.
+versioning:
+  scheme: calendar-quarter path segment
+  pattern: https://blackbuffalo.com/api/{YYYY-MM}/graphql.json
+  current: '2026-07'
+  probed_at: '2026-08-07'
+  probe: '{publicApiVersions{handle displayName supported}}'
+  versions:
+  - handle: '2025-10'
+    display_name: '2025-10'
+    supported: true
+  - handle: '2026-01'
+    display_name: '2026-01'
+    supported: true
+  - handle: '2026-04'
+    display_name: '2026-04'
+    supported: true
+  - handle: '2026-07'
+    display_name: '2026-07 (Latest)'
+    supported: true
+  - handle: '2026-10'
+    display_name: '2026-10 (Release candidate)'
+    supported: false
+  - handle: unstable
+    display_name: unstable
+    supported: false
+  policy_docs: https://shopify.dev/docs/api/usage/versioning
+  platform_inherited: true
+ucp_versioning:
+  scheme: dated protocol versions
+  supported: ['2026-04-08', '2026-01-23']
+  latest_stable: '2026-04-08'
+  source: https://blackbuffalo.com/.well-known/ucp
+  discovery: >-
+    Both versions are individually addressable at
+    https://black-buffalo.myshopify.com/.well-known/ucp/{version}, and
+    https://blackbuffalo.com/.well-known/ucp/2026-04-08 also resolves (200).
+  note: >-
+    This is the one place Black Buffalo's own host advertises a version negotiation
+    contract for agents, and /agents.md restates it under "Supported UCP versions".
+mcp_versioning:
+  protocol_version: '2025-06-18'
+  server: {name: universal-commerce, version: 0.1.0}
+  source: 'POST initialize to https://blackbuffalo.com/api/ucp/mcp, 2026-08-07'
+  note: >-
+    Server version 0.1.0 — the commerce MCP surface is early. All three capability blocks
+    (tools, prompts, resources) advertise listChanged: true, so an agent should expect the
+    tool set to move.
+deprecation:
+  policy_url: https://shopify.dev/docs/api/usage/versioning
+  platform_inherited: true
+  sunset_header: false
+  mechanism: >-
+    Quarterly version release with a supported/unsupported flag exposed through
+    publicApiVersions, plus @deprecated directives on individual schema fields.
+  deprecated_fields_in_current_schema: 51
+  provider_published_policy: false
+  note: >-
+    Recorded for accuracy, NOT wired as a Deprecation pointer — the policy is Shopify's
+    platform policy, not something Black Buffalo publishes or commits to.
+status_page:
+  present: false
+  probed:
+  - {url: 'https://status.blackbuffalo.com', result: 'DNS does not resolve'}
+  note: >-
+    No status page found on any Black Buffalo host. Deliberately NOT wired as a
+    StatusPage pointer.
+sla:
+  published: false
+support:
+  channel: https://blackbuffalo.com/pages/contact
+  note: A consumer contact form. There is no developer support channel of any kind.
+changelog:
+  published: false
+  note: >-
+    No dated changelog for any surface. changelog/black-buffalo-changelog.yml is
+    deliberately not emitted.
+documentation_defects:
+  description: >-
+    Real, currently-broken links in the provider's own agent-facing documents, verified
+    2026-08-07. Recorded because they are the difference between an agent contract that
+    resolves and one that does not.
+  items:
+  - source: /agents.md
+    claim: '"Full product and brand context: https://blackbuffalo.com/.well-known/llms.txt"'
+    observed_status: 404
+    reality: The document is served at the root path /llms.txt.
+  - source: /llms.txt
+    claim: '"Extended product and brand context: https://blackbuffalo.com/.well-known/llms-full.txt"'
+    observed_status: 404
+  - source: /agents.md and /llms.txt
+    claim: >-
+      Both name https://blackbuffalo.com/a/locator/sitemap.xml as the authoritative
+      source for store-locator discovery, and /agents.md gives a numbered procedure whose
+      first step is to fetch it.
+    observed_status: 404
+    reality: >-
+      The /a/locator/ index itself returns 200, but the sitemap an agent is instructed to
+      start from does not exist, so the published discovery procedure dead-ends at step 1.
+corporate:
+  acquired_by: ITG Brands (Imperial Brands plc)
+  announced: '2026-05-27'
+  consideration: USD 150 million upfront plus performance-based payments over three years
+  source: https://www.itgbrands.com/2026/05/27/itg-brands-expands-us-oral-portfolio-through-acquisition-of-black-buffalo/
+  note: >-
+    Relevant to lifecycle because the storefront and its agent surfaces now sit inside a
+    multinational tobacco group; the /agents.md content-restriction rules read as
+    regulated-industry marketing governance.

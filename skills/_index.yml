@@ -1,0 +1,29 @@
+generated: '2026-08-07'
+method: generated
+source: >-
+  mcp/black-buffalo-mcp.yml + graphql/black-buffalo-storefront.graphql +
+  llms/black-buffalo-agents.md
+note: >-
+  Black Buffalo publishes no OpenAPI, so every operation named in these skills was
+  grounded in either a live MCP tools/list response (both servers, 2026-08-07) or a field
+  grepped out of the introspected GraphQL SDL. No operation names are invented. Because
+  this is an age-restricted regulated nicotine product, every skill also carries the
+  provider's own published claim restrictions from /agents.md — those are the provider's
+  rules, not ours.
+skills:
+- file: black-buffalo-find-product.md
+  name: Find and compare Black Buffalo products
+  api: mcp/black-buffalo-mcp.yml
+  operations: [search_catalog, lookup_catalog, get_product, get_product_details, search, products, predictiveSearch, product, productByHandle]
+- file: black-buffalo-build-cart.md
+  name: Build a Black Buffalo cart
+  api: mcp/black-buffalo-mcp.yml
+  operations: [create_cart, get_cart, update_cart, cancel_cart, cartCreate, cartLinesAdd, cartLinesUpdate, cartLinesRemove, cartBuyerIdentityUpdate, cartDeliveryAddressesAdd, cartSelectedDeliveryOptionsUpdate, cartDiscountCodesUpdate]
+- file: black-buffalo-complete-checkout.md
+  name: Hand off a Black Buffalo checkout to a human
+  api: mcp/black-buffalo-mcp.yml
+  operations: [create_checkout, get_checkout, update_checkout, complete_checkout, cancel_checkout, get_order, cartPrepareForCompletion, cartSubmitForCompletion, cartCompletionAttempt]
+- file: black-buffalo-answer-store-and-policy.md
+  name: Answer a Black Buffalo policy, FAQ or "where to buy" question
+  api: mcp/black-buffalo-mcp.yml
+  operations: [search_shop_policies_and_faqs, shop, page, pageByHandle, article, articles, blog, blogByHandle]

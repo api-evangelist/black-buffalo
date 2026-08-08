@@ -1,0 +1,123 @@
+generated: '2026-08-07'
+method: probed
+source: live probes of https://blackbuffalo.com on 2026-08-07
+description: >-
+  Which cross-cutting and industry standards the surfaces served from Black Buffalo's
+  hosts actually conform to. Every `conforms: true` below is backed by a document fetched
+  or a live response observed; every `false` is a probe that missed. Nothing is asserted
+  from vendor documentation alone.
+standards:
+- id: graphql
+  conforms: true
+  evidence: >-
+    Full __schema introspection succeeded anonymously at
+    https://blackbuffalo.com/api/2026-04/graphql.json (424 types, 35 query fields,
+    41 mutations). SDL saved at graphql/black-buffalo-storefront.graphql.
+- id: relay-cursor-connections
+  conforms: true
+  evidence: 28 *Connection types with edges/node/cursor plus PageInfo in the SDL.
+- id: mcp
+  conforms: true
+  version: 'MCP protocol 2025-06-18 over JSON-RPC 2.0'
+  evidence: >-
+    POST initialize to https://blackbuffalo.com/api/ucp/mcp returned protocolVersion
+    2025-06-18 and serverInfo {name: universal-commerce, version: 0.1.0}. tools/list
+    returned 200 with 13 tools on that endpoint and 5 on https://blackbuffalo.com/api/mcp,
+    each carrying a JSON Schema inputSchema.
+- id: ucp
+  conforms: true
+  version: '2026-04-08'
+  evidence: >-
+    /.well-known/ucp returns a Universal Commerce Protocol merchant profile declaring
+    supported versions 2026-04-08 and 2026-01-23, the dev.ucp.shopping MCP service, the
+    checkout / cart / fulfillment / discount / order / catalog.search / catalog.lookup
+    capabilities, the dev.shopify.catalog extension, and two payment handlers.
+  spec: https://ucp.dev/2026-04-08/specification/overview/
+- id: json-schema-2020-12
+  conforms: true
+  evidence: >-
+    Every MCP tool inputSchema declares
+    $schema https://json-schema.org/draft/2020-12/schema.
+- id: openid-connect-discovery
+  conforms: true
+  evidence: >-
+    /.well-known/openid-configuration returns a valid OIDC discovery document (issuer,
+    authorization/token/jwks endpoints, RS256, S256 PKCE, claims_supported).
+- id: oauth2
+  conforms: true
+  evidence: authorization_code + refresh_token + jwt-bearer grants advertised in discovery.
+- id: rfc8414-oauth-authorization-server-metadata
+  conforms: true
+  evidence: /.well-known/oauth-authorization-server returns 200 with the same metadata document.
+- id: rfc7636-pkce
+  conforms: true
+  evidence: 'code_challenge_methods_supported: [S256]'
+- id: llms-txt
+  conforms: true
+  evidence: /llms.txt returns 200 with real agent instructions, not a docs index.
+- id: agents-md
+  conforms: true
+  evidence: >-
+    /agents.md returns 200 text/markdown, is named the canonical agent document by both
+    /llms.txt and /robots.txt, and is submitted for crawling in a dedicated
+    /sitemap_agentic_discovery.xml.
+- id: sitemaps-org
+  conforms: true
+  evidence: /sitemap.xml is a valid sitemapindex with five child sitemaps.
+- id: openapi
+  conforms: false
+  evidence: >-
+    /openapi.json, /swagger.json → 404; /api-docs, /docs → 404 HTML shell.
+    developer./api./docs.blackbuffalo.com do not resolve. Probed 2026-08-07.
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    No event, streaming or webhook surface is published from blackbuffalo.com. Shopify
+    webhooks exist for app developers but are not a Black Buffalo public surface.
+    Not applicable rather than deficient.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    No application/problem+json anywhere. Errors are GraphQL errors[]/userErrors and
+    JSON-RPC 2.0 error objects — see errors/black-buffalo-problem-types.yml.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returned 404.
+- id: rfc9727-api-catalog
+  conforms: false
+  evidence: /.well-known/api-catalog returned 404.
+- id: a2a-agent-card
+  conforms: false
+  evidence: >-
+    /.well-known/agent-card.json and /.well-known/agent.json both returned 404. No agent
+    card was authored on the provider's behalf.
+- id: dnssec
+  conforms: false
+  evidence: 'No DNSSEC on blackbuffalo.com — see security/black-buffalo-domain-security.yml.'
+- id: caa
+  conforms: false
+  evidence: No CAA records published for blackbuffalo.com.
+- id: hsts
+  conforms: true
+  evidence: 'blackbuffalo.com sets Strict-Transport-Security with max-age 7889238 (~91 days).'
+- id: dmarc
+  conforms: true
+  qualified: true
+  evidence: >-
+    DMARC record present but policy is p=none — monitoring only, no enforcement against
+    spoofed mail.
+compliance_program:
+  published: false
+  note: >-
+    No trust center, no SOC 2 / ISO 27001 / PCI attestation page and no compliance
+    disclosures were found on blackbuffalo.com (probe-security-programs.py returned
+    vdp=none trust=none on 2026-08-07). Card payments are handled by Shopify, whose
+    compliance posture is Shopify's to publish, not Black Buffalo's. Deliberately NOT
+    wired as a `Compliance` pointer.
+regulatory_context:
+  note: >-
+    Recorded for accuracy, not scored. Black Buffalo sells nicotine products regulated in
+    the United States as tobacco products by the FDA Center for Tobacco Products, and its
+    own /agents.md forbids agents from making modified-risk, cessation or comparative
+    health claims. That is a content-governance obligation carried in prose; there is no
+    machine-readable expression of it on any of the three API surfaces.

@@ -1,0 +1,272 @@
+generated: '2026-08-07'
+method: derived
+source: mcp/black-buffalo-mcp.yml + graphql/black-buffalo-storefront.graphql
+description: >-
+  Black Buffalo exposes no OpenAPI. Its three machine-readable surfaces are the Shopify
+  Storefront GraphQL API (anonymously introspectable at
+  https://blackbuffalo.com/api/2026-04/graphql.json), the Storefront MCP server at
+  /api/mcp, and the UCP commerce MCP server at /api/ucp/mcp. This crosswalk binds each
+  verified MCP tool to the GraphQL field(s) that back it, so a tool inherits a real input
+  contract from the SDL rather than a guessed one. Every GraphQL field named below was
+  grepped out of graphql/black-buffalo-storefront.graphql; every MCP tool name came from
+  a live tools/list. Nothing here is invented.
+purpose: >-
+  Make the agent-facing tool a first-class discovery unit and record where the three
+  surfaces DIVERGE. They are overlapping projections of one commerce core and none is a
+  superset: the UCP server can complete a checkout and read an order, which the anonymous
+  Storefront GraphQL cannot; the GraphQL schema exposes editorial, menu, metaobject,
+  localization and customer-account surfaces that no tool reaches.
+surfaces:
+  openapi:
+    present: false
+    note: >-
+      No OpenAPI/Swagger found. /openapi.json, /swagger.json → 404; /api-docs, /docs →
+      404 (HTML shell); developer./api./docs.blackbuffalo.com do not resolve. Probed
+      2026-08-07. The UCP MCP service does have a machine-readable contract, but it is
+      the PROTOCOL's, published by ucp.dev, not by Black Buffalo — see ucp_openrpc below.
+  ucp_openrpc:
+    url: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json
+    published_by: ucp.dev (Universal Commerce Protocol), not Black Buffalo
+    declared_in: well-known/black-buffalo-ucp.json
+    note: >-
+      Recorded as the governing schema for the /api/ucp/mcp tools. Not harvested into
+      openapi/ because it is not this provider's document.
+  graphql:
+    endpoint: https://blackbuffalo.com/api/2026-04/graphql.json
+    endpoint_template: https://blackbuffalo.com/api/{version}/graphql.json
+    gated: false
+    introspection_verified: '2026-08-07'
+    file: graphql/black-buffalo-storefront.graphql
+  mcp:
+  - endpoint: https://blackbuffalo.com/api/ucp/mcp
+    gated: false
+    tools_list_verified: '2026-08-07'
+    tool_count: 13
+    note: >-
+      tools/list is anonymous, but every tool requires meta["ucp-agent"].profile — a
+      resolvable agent profile URI — to be INVOKED. resources/list and prompts/list
+      return -32001 invalid_profile_url.
+  - endpoint: https://blackbuffalo.com/api/mcp
+    gated: false
+    tools_list_verified: '2026-08-07'
+    tool_count: 5
+  rest_json:
+    note: >-
+      /agents.md publishes unauthenticated read-only JSON views
+      (GET /products/{handle}.json) plus /collections/all and the sitemaps. These are
+      Shopify storefront JSON renderings, not a described API — no spec exists. Note
+      that /robots.txt explicitly DISALLOWS /cart.js and /recommendations/products and
+      tells agents to use UCP/MCP instead.
+crosswalk:
+- tool: search_catalog
+  servers: [black-buffalo-ucp-mcp, black-buffalo-storefront-mcp]
+  category: catalog
+  graphql: [search, products, predictiveSearch]
+  rest: []
+  binding: graphql
+  confidence: high
+  note: >-
+    Free-text + filtered product search. QueryRoot.search(query, types, productFilters,
+    first/after) and QueryRoot.products(query, filters, sortKey) are the backing fields;
+    predictiveSearch covers the typeahead variant. The tool's pagination.cursor maps to
+    the Relay after/endCursor pair.
+- tool: get_product
+  servers: [black-buffalo-ucp-mcp]
+  category: catalog
+  graphql: [product, productByHandle, variantBySelectedOptions]
+  rest: []
+  binding: graphql
+  confidence: high
+  note: >-
+    product(id:)/productByHandle(handle:) with selectedOptions resolving the variant.
+    The tool's `selected` and `preferences` inputs correspond to the
+    ProductVariant.selectedOptions narrowing on the schema side.
+- tool: get_product_details
+  servers: [black-buffalo-storefront-mcp]
+  category: catalog
+  graphql: [product, productByHandle, productRecommendations]
+  rest: []
+  binding: graphql
+  confidence: high
+  note: >-
+    The Storefront-MCP sibling of get_product. Its country/language inputs map to the
+    @inContext directive rather than to arguments on the field itself.
+- tool: lookup_catalog
+  servers: [black-buffalo-ucp-mcp]
+  category: catalog
+  graphql: [nodes, node]
+  rest: []
+  binding: graphql
+  confidence: medium
+  note: >-
+    Batch identifier resolution over gid://shopify/Product and
+    gid://shopify/ProductVariant. QueryRoot.nodes(ids:) is the schema equivalent, but the
+    tool additionally regroups variants under their parent product and annotates each
+    with an `inputs` array — that grouping is server-side and has no GraphQL field.
+- tool: create_cart
+  servers: [black-buffalo-ucp-mcp]
+  category: cart
+  graphql: [cartCreate]
+  rest: []
+  binding: graphql
+  confidence: high
+- tool: get_cart
+  servers: [black-buffalo-ucp-mcp, black-buffalo-storefront-mcp]
+  category: cart
+  graphql: [cart]
+  rest: []
+  binding: graphql
+  confidence: high
+  note: QueryRoot.cart(id:) returns lines, deliveryGroups, discountAllocations and checkoutUrl.
+- tool: update_cart
+  servers: [black-buffalo-ucp-mcp, black-buffalo-storefront-mcp]
+  category: cart
+  graphql:
+  - cartLinesAdd
+  - cartLinesUpdate
+  - cartLinesRemove
+  - cartBuyerIdentityUpdate
+  - cartDeliveryAddressesAdd
+  - cartDeliveryAddressesReplace
+  - cartDeliveryAddressesUpdate
+  - cartDeliveryAddressesRemove
+  - cartSelectedDeliveryOptionsUpdate
+  - cartDiscountCodesUpdate
+  - cartGiftCardCodesAdd
+  - cartGiftCardCodesRemove
+  - cartNoteUpdate
+  - cartAttributesUpdate
+  rest: []
+  binding: graphql
+  confidence: high
+  note: >-
+    One tool fans out to fourteen GraphQL mutations. The Storefront-MCP variant's input
+    property names map almost one-to-one (add_items → cartLinesAdd, remove_line_ids →
+    cartLinesRemove, buyer_identity → cartBuyerIdentityUpdate, discount_codes →
+    cartDiscountCodesUpdate, and so on).
+- tool: cancel_cart
+  servers: [black-buffalo-ucp-mcp]
+  category: cart
+  graphql: [cartRemovePersonalData]
+  rest: []
+  binding: graphql
+  confidence: low
+  note: >-
+    No GraphQL mutation deletes a cart. cartRemovePersonalData is the closest schema
+    behaviour; cancellation is most likely a UCP server-side state transition with no
+    Storefront GraphQL equivalent. Mapped low deliberately rather than left blank.
+- tool: create_checkout
+  servers: [black-buffalo-ucp-mcp]
+  category: checkout
+  graphql: [cartCreate, cartPaymentUpdate]
+  rest: []
+  binding: graphql
+  confidence: medium
+  note: >-
+    UCP models a checkout as a first-class object (gid://shopify/Checkout/...). The
+    Storefront GraphQL schema has no Checkout type — the equivalent state lives on Cart
+    plus cartPaymentUpdate. The mapping is semantic, not structural.
+- tool: get_checkout
+  servers: [black-buffalo-ucp-mcp]
+  category: checkout
+  graphql: [cart, cartCompletionAttempt]
+  rest: []
+  binding: graphql
+  confidence: medium
+- tool: update_checkout
+  servers: [black-buffalo-ucp-mcp]
+  category: checkout
+  graphql: [cartBuyerIdentityUpdate, cartBillingAddressUpdate, cartPaymentUpdate, cartSelectedDeliveryOptionsUpdate]
+  rest: []
+  binding: graphql
+  confidence: medium
+- tool: complete_checkout
+  servers: [black-buffalo-ucp-mcp]
+  category: checkout
+  graphql: [cartPrepareForCompletion, cartSubmitForCompletion]
+  rest: []
+  binding: graphql
+  confidence: medium
+  note: >-
+    The money-moving tool. cartSubmitForCompletion is the schema-side terminal mutation,
+    but the UCP tool additionally settles the payment instrument and returns an order id
+    and Thank You Page URL. Black Buffalo's robots.txt forbids invoking this without
+    contemporaneous human approval.
+- tool: cancel_checkout
+  servers: [black-buffalo-ucp-mcp]
+  category: checkout
+  graphql: []
+  rest: []
+  binding: none
+  confidence: low
+  note: No Storefront GraphQL mutation cancels a checkout; server-side UCP state only.
+- tool: search_shop_policies_and_faqs
+  servers: [black-buffalo-storefront-mcp]
+  category: policy
+  graphql: [shop, pageByHandle, page]
+  rest: []
+  binding: graphql
+  confidence: high
+  note: >-
+    Shop.privacyPolicy / refundPolicy / shippingPolicy / termsOfService /
+    subscriptionPolicy back the policy answers; pageByHandle("faq") backs the FAQ half.
+mcp_only:
+- tool: get_order
+  reason: >-
+    The anonymous Storefront GraphQL schema has NO order query — orders live behind the
+    Customer Account API (scope customer-account-api:full). The UCP server exposes order
+    retrieval directly, so this is a real capability the GraphQL surface does not have at
+    the same auth level.
+- tool: cancel_checkout
+  reason: No corresponding GraphQL mutation exists; UCP-server state transition only.
+- tool: cancel_cart
+  reason: >-
+    No cart-deletion mutation in the Storefront schema; only cartRemovePersonalData,
+    which is a different operation.
+graphql_only:
+- fields: [article, articles, blog, blogByHandle, blogs]
+  reason: >-
+    Editorial content (the /blogs/stories archive) is queryable but no MCP tool reaches
+    it — agents answering brand or story questions must use GraphQL or fetch the HTML.
+- fields: [menu, metaobject, metaobjects, sitemap, urlRedirects]
+  reason: Navigation, custom content models and URL history — no tool surface.
+- fields: [localization, paymentSettings, shopPayInstallmentsPricing, publicApiVersions]
+  reason: >-
+    Store configuration and the live API-version support matrix. publicApiVersions is
+    what lifecycle/black-buffalo-lifecycle.yml is built from.
+- fields: [locations, productTags, productTypes, collection, collectionByHandle, collections]
+  reason: >-
+    Collection browsing and taxonomy. The tools only search and look up products; there
+    is no "list collections" tool, so an agent cannot enumerate the ZERO / long-cut /
+    pouch collections through MCP.
+- fields: [customer, customerCreate, customerAccessTokenCreate, customerUpdate, customerAddressCreate, customerRecover, customerReset]
+  reason: >-
+    Customer identity and account management. Requires a customerAccessToken; no MCP
+    tool exposes it.
+- fields: [cartClone, cartMetafieldsSet, cartMetafieldDelete]
+  reason: Cart duplication and custom cart metadata — no tool equivalent.
+rest_only: []
+coverage:
+  surfaces_present: [graphql, mcp-storefront, mcp-ucp]
+  openapi_present: false
+  tools_named: 18
+  distinct_tool_names: 16
+  tools_bound_to_graphql: 14
+  tools_unbound: 2
+  mcp_only: 3
+  graphql_query_fields: 35
+  graphql_mutation_fields: 41
+  graphql_fields_with_no_tool: 28
+x-evidence:
+  graphql_introspection:
+    url: https://blackbuffalo.com/api/2026-04/graphql.json
+    http_status: 200
+    fetched: '2026-08-07'
+  ucp_mcp_tools_list:
+    url: https://blackbuffalo.com/api/ucp/mcp
+    http_status: 200
+    fetched: '2026-08-07'
+  storefront_mcp_tools_list:
+    url: https://blackbuffalo.com/api/mcp
+    http_status: 200
+    fetched: '2026-08-07'

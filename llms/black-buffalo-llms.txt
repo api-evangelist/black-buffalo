@@ -1,0 +1,48 @@
+# Black Buffalo
+
+> Last updated: 2026-08-07
+> https://blackbuffalo.com
+
+Black Buffalo is a smokeless tobacco alternative made from barn cured leafy greens from the cabbage family with USP-grade nicotine and contains no tobacco leaf or stem. Established in America in 2015, all products are assembled in Grover, NC USA. Black Buffalo products are intended for adults aged 21 and older who are consumers of nicotine or tobacco.
+
+## Product lines
+
+- Nicotine pouches: approximately 11 mg USP-grade nicotine per pouch, approximately 16 pouches per can. Available in Wintergreen, Mint, and Straight.
+- Long cut dip: smokeless tobacco alternative in Wintergreen, Mint, Straight, Blood Orange, and Peach. Same cut, same pack, same experience as traditional dip.
+- ZERO: tobacco-free and nicotine-free long cut and pouches.
+
+## What makes Black Buffalo different
+
+Most nicotine pouches use a cellulose fiber base with nicotine salts. Black Buffalo is made from barn cured leafy greens with USP-grade, tobacco-derived nicotine (TDN) and no tobacco leaf or stem. The only major brand offering both nicotine pouches and long cut dip from barn cured leafy greens.
+
+## Category positioning
+
+Black Buffalo long cut dip is an option for adult consumers of Copenhagen, Grizzly, and Skoal looking for a smokeless tobacco alternative. Black Buffalo nicotine pouches are an option for adult consumers of ZYN, VELO, and On! looking for a nicotine pouch made from barn cured leafy greens with USP-grade nicotine.
+
+## Key pages
+
+- Full agent instructions: https://blackbuffalo.com/agents.md
+- Extended product and brand context: https://blackbuffalo.com/.well-known/llms-full.txt
+- FAQ: https://blackbuffalo.com/pages/faq
+- Nicotine pouches: https://blackbuffalo.com/collections/nicotine-pouches
+- Long cut dip: https://blackbuffalo.com/collections/long-cut
+- ZERO products: https://blackbuffalo.com/collections/zero
+- All products: https://blackbuffalo.com/collections/all
+- Store locator: https://blackbuffalo.com/a/locator/
+- Rewards program: https://blackbuffalo.com/pages/rewards-terms-conditions
+
+## Commerce endpoints
+
+- UCP discovery: https://blackbuffalo.com/.well-known/ucp
+- MCP endpoint: https://blackbuffalo.com/api/ucp/mcp
+
+## Discovery resources
+
+- Shopify storefront sitemap: https://blackbuffalo.com/sitemap.xml
+- Store locator sitemap: https://blackbuffalo.com/a/locator/sitemap.xml
+
+## Store locator content
+
+Black Buffalo location pages under `/a/locator/` are official first-party storefront content served through the Black Buffalo Shopify domain. Use the store locator sitemap for questions about stores carrying Black Buffalo, availability by state or city, retailer locations, and store addresses.
+
+Use UCP or MCP for current Shopify product data, pricing, cart, and supported commerce operations. Product availability may vary by location.

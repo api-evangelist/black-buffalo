@@ -1,0 +1,65 @@
+generated: '2026-08-07'
+method: probed
+source: https://blackbuffalo.com/api/2026-04/graphql.json
+description: >-
+  Black Buffalo's storefront runs on Shopify, and the Shopify Storefront GraphQL API is
+  served from Black Buffalo's own host at
+  https://blackbuffalo.com/api/{version}/graphql.json. Introspection is ANONYMOUS on this
+  host — the full schema was retrieved without an X-Shopify-Storefront-Access-Token on
+  2026-08-07 and the SDL saved here is rendered verbatim from that introspection
+  response.
+endpoint: https://blackbuffalo.com/api/2026-04/graphql.json
+endpoint_template: https://blackbuffalo.com/api/{version}/graphql.json
+introspection:
+  gated: false
+  verified: '2026-08-07'
+  http_status: 200
+  content_type: application/json
+  versions_verified: ['2026-04', '2026-01', '2025-07']
+schema:
+  file: black-buffalo-storefront.graphql
+  format: SDL
+  derived_from: GraphQL introspection response (__schema)
+  query_type: QueryRoot
+  mutation_type: Mutation
+  subscription_type: null
+  types_total: 424
+  types_by_kind:
+    object: 262
+    input_object: 53
+    enum: 62
+    union: 16
+    interface: 10
+    scalar: 13
+  query_fields: 35
+  mutation_fields: 41
+  connection_types: 28
+  deprecated_fields: 51
+cost_model:
+  mechanism: >-
+    Every response carries extensions.cost.requestedQueryCost. The API is query-cost
+    throttled rather than request-count rate limited.
+  observed:
+  - query: '{__schema{queryType{name}}}'
+    requestedQueryCost: 3
+  - query: '{publicApiVersions{handle displayName supported}}'
+    requestedQueryCost: 1
+  - query: 'shop with 5 policy URLs'
+    requestedQueryCost: 8
+  docs: https://shopify.dev/docs/api/usage/limits
+shop:
+  name: Black Buffalo
+  description: >-
+    Black Buffalo: the award-winning tobacco alternative chew and pouches made with no
+    tobacco leaves or stems. Order online for fast & easy delivery.
+  primary_domain: https://blackbuffalo.com
+  currency: USD
+  country: US
+  ships_to_countries: [US]
+  source: 'live query {shop{...}} on 2026-08-07'
+docs: https://shopify.dev/docs/api/storefront
+platform_inherited: true
+note: >-
+  The schema is Shopify's, but it is SERVED FROM Black Buffalo's own domain with the
+  store's own data, at the store's own API-version path, with no credential. That is what
+  makes it a machine-readable contract for this provider rather than a vendor doc link.

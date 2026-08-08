@@ -42,5 +42,22 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Black Buffalo is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.nasdaqprivatemarket.com/
+Black Buffalo Inc. is an American smokeless tobacco alternative company founded in 2015 and
+headquartered in Chicago, Illinois, selling nicotine pouches, long cut dip and its nicotine-free
+ZERO line direct to adult consumers (21+) at blackbuffalo.com and through convenience and fuel
+retailers. Imperial Brands' U.S. subsidiary ITG Brands acquired the company in May 2026.
+
+Black Buffalo runs no developer program and publishes no OpenAPI, but its Shopify-hosted
+storefront exposes a substantial machine-readable surface from its own domain:
+
+- **Storefront GraphQL API** — anonymously introspectable at `/api/2026-04/graphql.json`
+  (424 types, 35 query fields, 41 mutations). SDL in `graphql/`.
+- **Two live MCP servers** — `/api/mcp` (5 tools) and `/api/ucp/mcp` (13 tools), both of which
+  answered an anonymous `tools/list` with full JSON Schema input contracts. Captured in `mcp/`.
+- **Universal Commerce Protocol** merchant profile at `/.well-known/ucp` (UCP 2026-04-08).
+- **OpenID Connect + RFC 8414** discovery for customer accounts.
+- **A provider-authored `/agents.md` and `/llms.txt`** telling AI agents which surface to use,
+  what claims they may not make about a regulated nicotine product, and that no agent may
+  finalize payment without contemporaneous human approval.
+
+- https://blackbuffalo.com/

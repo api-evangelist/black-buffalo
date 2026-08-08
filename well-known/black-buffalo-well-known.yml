@@ -1,0 +1,99 @@
+generated: '2026-08-07'
+method: probed
+source: https://blackbuffalo.com/.well-known/
+hosts_probed:
+- https://blackbuffalo.com
+- https://black-buffalo.myshopify.com
+- https://developer.blackbuffalo.com
+- https://api.blackbuffalo.com
+- https://docs.blackbuffalo.com
+host: https://blackbuffalo.com
+documents:
+- path: /.well-known/ucp
+  status: 200
+  file: black-buffalo-ucp.json
+  standard: Universal Commerce Protocol (ucp.dev) merchant profile
+  note: >-
+    Declares UCP versions 2026-04-08 and 2026-01-23, the dev.ucp.shopping MCP service
+    endpoint, the checkout / cart / fulfillment / discount / order / catalog.search /
+    catalog.lookup capabilities, the dev.shopify.catalog extension, and two payment
+    handlers (com.google.pay and dev.shopify.card). The canonical host inside the
+    document is https://black-buffalo.myshopify.com, which serves a byte-identical
+    profile.
+- path: /.well-known/ucp/2026-04-08
+  status: 200
+  note: The latest stable UCP version is individually addressable.
+- path: /.well-known/openid-configuration
+  status: 200
+  file: black-buffalo-openid-configuration.json
+  standard: OpenID Connect Discovery 1.0
+  note: >-
+    Shopify customer accounts; issuer https://shopify.com/authentication/22588521.
+    Advertises openid, email, customer-account-api:full and
+    customer-account-mcp-api:full.
+- path: /.well-known/oauth-authorization-server
+  status: 200
+  file: black-buffalo-oauth-authorization-server.json
+  standard: RFC 8414 OAuth 2.0 Authorization Server Metadata
+  note: Byte-identical to the openid-configuration document.
+- path: /.well-known/security.txt
+  status: 404
+- path: /.well-known/api-catalog
+  status: 404
+- path: /.well-known/ai-plugin.json
+  status: 404
+- path: /.well-known/agent-card.json
+  status: 404
+- path: /.well-known/agent.json
+  status: 404
+- path: /.well-known/llms.txt
+  status: 404
+  note: >-
+    BROKEN SELF-REFERENCE. /agents.md tells agents that "full product and brand context"
+    lives at https://blackbuffalo.com/.well-known/llms.txt, and /llms.txt points at
+    https://blackbuffalo.com/.well-known/llms-full.txt. Both 404. The real document is
+    served at the root path /llms.txt.
+- path: /.well-known/llms-full.txt
+  status: 404
+  note: Referenced from /llms.txt "Key pages"; does not exist.
+other_agent_discovery:
+- path: /llms.txt
+  status: 200
+  file: llms/black-buffalo-llms.txt
+  note: Real agent instructions, not a docs index — see llms/.
+- path: /agents.md
+  status: 200
+  file: llms/black-buffalo-agents.md
+  note: >-
+    The substantive agent contract: product facts, pricing, retailer list, an explicit
+    list of claims agents may NOT make about a regulated nicotine product, the UCP/MCP
+    endpoints, and a source-priority order.
+- path: /robots.txt
+  status: 200
+  file: black-buffalo-robots.txt
+  note: >-
+    Carries agent policy in comments — points at /agents.md and the UCP/MCP endpoints,
+    asks personal-shopping agents to install https://shop.app/SKILL.md, and states
+    "Checkouts are for humans": no scripted form fills or end-to-end agent flows that
+    finalize payment without explicit contemporaneous human approval. Disallows
+    /cart.js and /recommendations/products specifically so agents use UCP/MCP instead.
+- path: /sitemap.xml
+  status: 200
+  note: >-
+    Sitemap index whose FIRST child is /sitemap_agentic_discovery.xml, a one-entry
+    sitemap listing https://blackbuffalo.com/agents.md with changefreq weekly — the
+    agent document is deliberately submitted for crawling.
+- path: /sitemap_agentic_discovery.xml
+  status: 200
+- path: /a/locator/sitemap.xml
+  status: 404
+  note: >-
+    BROKEN SELF-REFERENCE. Both /llms.txt and /agents.md name this as the authoritative
+    source for store-locator discovery, and /agents.md gives a numbered procedure that
+    begins by fetching it. It does not resolve. The /a/locator/ index itself returns 200.
+x-evidence:
+  fetched: '2026-08-07'
+  method: 'GET, anonymous, no credentials'
+  note: >-
+    Every status above was observed directly. developer./api./docs.blackbuffalo.com do
+    not resolve (DNS failure, curl exit 6).

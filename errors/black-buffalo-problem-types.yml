@@ -1,0 +1,188 @@
+generated: '2026-08-07'
+method: derived
+source: graphql/black-buffalo-storefront.graphql + observed live MCP error responses
+format: graphql-user-errors
+description: >-
+  Black Buffalo publishes no OpenAPI, so there are no RFC 9457 problem+json responses to
+  derive. The real error contract lives in two places: the typed userErrors payloads in
+  the Storefront GraphQL schema served from Black Buffalo's own host, and JSON-RPC 2.0
+  errors on the two MCP endpoints. Both are enumerated below straight from the
+  introspected SDL and from error responses actually observed on 2026-08-07. Nothing is
+  invented.
+rfc9457: false
+envelopes:
+- surface: graphql
+  endpoint: https://blackbuffalo.com/api/2026-04/graphql.json
+  transport_status: 200
+  request_errors:
+    field: errors[]
+    shape: [message, locations, path, extensions.code]
+    note: Malformed, unauthorized and cost-throttled requests surface here, not as HTTP 4xx.
+  mutation_errors:
+    interface: DisplayableError
+    shape: [field, message, code]
+    note: Every mutation returns a typed *UserError list alongside its payload.
+- surface: mcp
+  endpoints:
+  - https://blackbuffalo.com/api/mcp
+  - https://blackbuffalo.com/api/ucp/mcp
+  transport: JSON-RPC 2.0
+  shape: [error.code, error.message, error.data]
+  observed_errors:
+  - code: -32001
+    message: UCP discovery failed
+    data:
+      code: invalid_profile_url
+      content: 'Unable to fetch agent profile: Missing profile uri'
+      continue_url: https://black-buffalo.myshopify.com/
+    triggered_by: 'POST resources/list and prompts/list with no meta["ucp-agent"].profile'
+    http_status: 200
+    fetched: '2026-08-07'
+    note: >-
+      The error is carried inside a 200 response. Agents must inspect the JSON-RPC body,
+      not the HTTP status.
+error_types:
+- name: CartUserError
+  code_enum: CartErrorCode
+  code_count: 58
+  returned_by:
+  - cartCreate
+  - cartLinesAdd
+  - cartLinesUpdate
+  - cartLinesRemove
+  - cartBuyerIdentityUpdate
+  - cartDiscountCodesUpdate
+  - cartGiftCardCodesAdd
+  - cartGiftCardCodesRemove
+  - cartGiftCardCodesUpdate
+  - cartNoteUpdate
+  - cartAttributesUpdate
+  - cartDeliveryAddressesAdd
+  - cartDeliveryAddressesReplace
+  - cartDeliveryAddressesUpdate
+  - cartDeliveryAddressesRemove
+  - cartSelectedDeliveryOptionsUpdate
+  - cartBillingAddressUpdate
+  - cartPaymentUpdate
+  - cartClone
+  representative_codes:
+  - INVALID
+  - LESS_THAN
+  - INVALID_MERCHANDISE_LINE
+  - MERCHANDISE_NOT_APPLICABLE
+  - MERCHANDISE_LINE_TRANSFORMERS_RUN_ERROR
+  - MISSING_DISCOUNT_CODE
+  - MISSING_NOTE
+  - NOTE_TOO_LONG
+  - INVALID_DELIVERY_GROUP
+  - INVALID_DELIVERY_OPTION
+  - PENDING_DELIVERY_GROUPS
+  - INVALID_PAYMENT
+  - PAYMENT_METHOD_NOT_SUPPORTED
+  - PAYMENT_METHOD_NOT_APPLICABLE
+  - INVALID_PAYMENT_DEFERRED_PAYMENT_REQUIRED
+  - INVALID_PAYMENT_EMPTY_CART
+  agent_relevance: >-
+    This is the enum an agent hits building a cart through update_cart on either MCP
+    server. The tool surfaces the failure as a tool result, but the code vocabulary is
+    this one.
+- name: SubmissionError
+  code_enum: SubmissionErrorCode
+  code_count: 95
+  returned_by: [cartSubmitForCompletion, cartPrepareForCompletion]
+  representative_codes:
+  - ERROR
+  - NO_DELIVERY_GROUP_SELECTED
+  - BUYER_IDENTITY_EMAIL_IS_INVALID
+  - BUYER_IDENTITY_EMAIL_REQUIRED
+  - BUYER_IDENTITY_PHONE_IS_INVALID
+  - DELIVERY_ADDRESS1_INVALID
+  - DELIVERY_ADDRESS1_REQUIRED
+  - DELIVERY_CITY_REQUIRED
+  - DELIVERY_POSTAL_CODE_INVALID
+  agent_relevance: >-
+    The largest enum in the schema and the one that governs the terminal step behind
+    complete_checkout. Most codes are field-level validation on the buyer identity and
+    delivery address.
+- name: CompletionError
+  code_enum: CompletionErrorCode
+  code_count: 13
+  returned_by: [cartCompletionAttempt]
+  representative_codes:
+  - ERROR
+  - INVENTORY_RESERVATION_ERROR
+  - PAYMENT_ERROR
+  - PAYMENT_TRANSIENT_ERROR
+  - PAYMENT_AMOUNT_TOO_SMALL
+  - PAYMENT_GATEWAY_NOT_ENABLED_ERROR
+  - PAYMENT_INSUFFICIENT_FUNDS
+  - PAYMENT_INVALID_PAYMENT_METHOD
+  - PAYMENT_INVALID_CURRENCY
+  - PAYMENT_INVALID_CREDIT_CARD
+  - PAYMENT_INVALID_BILLING_ADDRESS
+  - PAYMENT_CARD_DECLINED
+  - PAYMENT_CALL_ISSUER
+  agent_relevance: >-
+    This is the payment-outcome vocabulary — the nearest thing this provider has to a
+    decline-code reference (see decline_codes below). PAYMENT_TRANSIENT_ERROR is the only
+    code that is safe to retry, and even then only with human re-approval, since no
+    idempotency key exists.
+- name: CustomerUserError
+  code_enum: CustomerErrorCode
+  code_count: 15
+  returned_by:
+  - customerCreate
+  - customerUpdate
+  - customerActivate
+  - customerActivateByUrl
+  - customerAccessTokenCreate
+  - customerAccessTokenCreateWithMultipass
+  - customerAccessTokenRenew
+  - customerAddressCreate
+  - customerAddressUpdate
+  - customerAddressDelete
+  - customerDefaultAddressUpdate
+  - customerRecover
+  - customerReset
+  - customerResetByUrl
+  representative_codes:
+  - BLANK
+  - INVALID
+  - TAKEN
+  - TOO_LONG
+  - TOO_SHORT
+  - UNIDENTIFIED_CUSTOMER
+  - CUSTOMER_DISABLED
+  - TOKEN_INVALID
+  - NOT_FOUND
+- name: MetafieldsSetUserError
+  code_enum: MetafieldsSetUserErrorCode
+  code_count: 10
+  returned_by: [cartMetafieldsSet]
+  representative_codes: [BLANK, INCLUSION, PRESENT, TOO_SHORT, TOO_LONG, INVALID_OWNER, INVALID_VALUE, INVALID_TYPE, APP_NOT_AUTHORIZED]
+- name: MetafieldDeleteUserError
+  code_enum: MetafieldDeleteErrorCode
+  code_count: 3
+  returned_by: [cartMetafieldDelete]
+  representative_codes: [INVALID_OWNER, METAFIELD_DOES_NOT_EXIST, APP_NOT_AUTHORIZED]
+- name: UserErrorsShopPayPaymentRequestSessionUserErrors
+  returned_by: [shopPayPaymentRequestSessionCreate, shopPayPaymentRequestSessionSubmit]
+- name: UserError
+  note: The generic field/message pair; the base shape the typed errors specialise.
+decline_codes:
+  dedicated_reference_published: false
+  nearest_equivalent: CompletionErrorCode
+  note: >-
+    Black Buffalo is a merchant, not a payment processor, so it publishes no decline-code
+    reference of its own and errors/black-buffalo-decline-codes.yml is deliberately NOT
+    emitted. The payment-outcome codes above (PAYMENT_CARD_DECLINED,
+    PAYMENT_INSUFFICIENT_FUNDS, PAYMENT_CALL_ISSUER, PAYMENT_INVALID_CREDIT_CARD) are the
+    only decline vocabulary exposed, and they come from the Shopify schema.
+gaps:
+- >-
+  No error is documented anywhere on blackbuffalo.com in prose. /agents.md describes
+  which surface to call but never what a failure looks like, so every code above had to
+  be read out of the schema.
+- >-
+  MCP tool errors are returned inside HTTP 200 JSON-RPC bodies with no mapping published
+  between JSON-RPC error codes and the GraphQL enums beneath them.
