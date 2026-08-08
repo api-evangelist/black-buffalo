@@ -1,18 +1,103 @@
 aid: black-buffalo
 name: Black Buffalo
-description: 'Black Buffalo is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Black Buffalo Inc. is an American smokeless tobacco alternative company founded in 2015
+  and headquartered in Chicago, Illinois, selling nicotine pouches, long cut dip and its
+  nicotine-free ZERO line direct to adult consumers at blackbuffalo.com and through
+  convenience and fuel retailers. Imperial Brands' U.S. subsidiary ITG Brands acquired the
+  company in May 2026. Black Buffalo runs no developer program and publishes no OpenAPI,
+  but its Shopify-hosted storefront exposes a substantial machine-readable surface from its
+  own domain: an anonymously introspectable Storefront GraphQL API, TWO live Model Context
+  Protocol servers whose tools/list both answer anonymously, a Universal Commerce Protocol
+  merchant profile at /.well-known/ucp, OpenID Connect and RFC 8414 discovery for customer
+  accounts, and a provider-authored /agents.md and /llms.txt that tell AI agents which
+  surface to use, what claims they may not make about a regulated nicotine product, and
+  that no agent may finalize payment without contemporaneous human approval.
 url: https://raw.githubusercontent.com/api-evangelist/black-buffalo/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment-pipeline
+image: https://cdn.shopify.com/s/files/1/2258/8521/files/Black-Buffalo-Social-Sharing-Image.jpg?v=1738521407
 specificationVersion: '0.20'
 created: '2026-08-07'
 modified: '2026-08-07'
 tags:
 - Company
-apis: []
+- Consumer Packaged Goods
+- Nicotine Pouches
+- Smokeless Tobacco Alternative
+- Ecommerce
+- Direct to Consumer
+- Retail
+- Agentic Commerce
+- Shopify
+- GraphQL
+- Model Context Protocol
+- Universal Commerce Protocol
+apis:
+- aid: black-buffalo:storefront-graphql
+  name: Black Buffalo Storefront GraphQL API
+  description: >-
+    The Shopify Storefront GraphQL API as served from Black Buffalo's own domain.
+    Introspection is anonymous — the full schema (424 types, 35 query fields, 41
+    mutations, 28 Relay connections) was retrieved without a Storefront access token on
+    2026-08-07. Covers the product catalog, collections, cart and checkout preparation,
+    editorial content, store policies and customer accounts.
+  humanURL: https://shopify.dev/docs/api/storefront
+  baseURL: https://blackbuffalo.com/api/2026-04/graphql.json
+  tags:
+  - GraphQL
+  - Ecommerce
+  - Catalog
+  - Cart
+  properties:
+  - type: GraphQL
+    url: graphql/black-buffalo-storefront.graphql
+  - type: GraphQLManifest
+    url: graphql/black-buffalo-graphql.yml
+  - type: DataModel
+    url: data-model/black-buffalo-data-model.yml
+- aid: black-buffalo:storefront-mcp
+  name: Black Buffalo Storefront MCP Server
+  description: >-
+    A live Model Context Protocol server on Black Buffalo's storefront host. An anonymous
+    JSON-RPC tools/list returned five tools with full JSON Schema input contracts —
+    search_catalog, get_product_details, get_cart, update_cart and
+    search_shop_policies_and_faqs.
+  humanURL: https://blackbuffalo.com/agents.md
+  baseURL: https://blackbuffalo.com/api/mcp
+  tags:
+  - MCP
+  - Agents
+  - Ecommerce
+  properties:
+  - type: MCPServer
+    url: mcp/black-buffalo-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/black-buffalo-tool-crosswalk.yml
+- aid: black-buffalo:ucp-commerce
+  name: Black Buffalo UCP Agentic Commerce API
+  description: >-
+    Black Buffalo implements the Universal Commerce Protocol for agent-driven commerce.
+    The merchant profile at /.well-known/ucp declares UCP 2026-04-08 and 2026-01-23, the
+    dev.ucp.shopping MCP service endpoint, the cart / checkout / fulfillment / discount /
+    order / catalog capabilities and two payment handlers (Google Pay and Shopify card).
+    Unusually, this endpoint's tools/list answers ANONYMOUSLY — thirteen tools with full
+    JSON Schema input contracts, spanning the whole cart-to-completed-order lifecycle.
+    Checkout completion still requires contemporaneous buyer approval.
+  humanURL: https://ucp.dev/2026-04-08/specification/overview/
+  baseURL: https://blackbuffalo.com/api/ucp/mcp
+  tags:
+  - UCP
+  - Agentic Commerce
+  - MCP
+  - Checkout
+  properties:
+  - type: MCPServer
+    url: mcp/black-buffalo-mcp.yml
+  - type: AgenticAccess
+    url: agentic-access/black-buffalo-agentic-access.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +105,90 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://blackbuffalo.com/
+- type: Documentation
+  url: https://blackbuffalo.com/agents.md
+- type: LLMsTxt
+  url: llms/black-buffalo-llms.txt
+- type: WellKnown
+  url: well-known/black-buffalo-well-known.yml
+- type: MCPServer
+  url: mcp/black-buffalo-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/black-buffalo-tool-crosswalk.yml
+- type: AgenticAccess
+  url: agentic-access/black-buffalo-agentic-access.yml
+- type: GraphQL
+  url: graphql/black-buffalo-storefront.graphql
+- type: DataModel
+  url: data-model/black-buffalo-data-model.yml
+- type: Authentication
+  url: authentication/black-buffalo-authentication.yml
+- type: OAuthScopes
+  url: scopes/black-buffalo-scopes.yml
+- type: Conventions
+  url: conventions/black-buffalo-conventions.yml
+- type: ErrorCatalog
+  url: errors/black-buffalo-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/black-buffalo-lifecycle.yml
+- type: Conformance
+  url: conformance/black-buffalo-conformance.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: DomainSecurity
+  url: security/black-buffalo-domain-security.yml
+- type: FAQ
+  url: https://blackbuffalo.com/pages/faq
+- type: Blog
+  url: https://blackbuffalo.com/blogs/stories
+- type: About
+  url: https://blackbuffalo.com/pages/our-story
+- type: ContactUs
+  url: https://blackbuffalo.com/pages/contact
+- type: Support
+  url: https://blackbuffalo.com/pages/contact
+- type: StoreLocator
+  url: https://blackbuffalo.com/a/locator/
+- type: SignUp
+  url: https://blackbuffalo.com/account/register
+- type: Login
+  url: https://blackbuffalo.com/account/login
+- type: TermsOfService
+  url: https://blackbuffalo.com/policies/terms-of-service
+- type: PrivacyPolicy
+  url: https://blackbuffalo.com/policies/privacy-policy
+- type: RefundPolicy
+  url: https://blackbuffalo.com/policies/refund-policy
+- type: ShippingPolicy
+  url: https://blackbuffalo.com/policies/shipping-policy
+- type: LoyaltyProgram
+  url: https://blackbuffalo.com/pages/rewards
+- type: SecondaryMarket
+  url: https://equityzen.com/company/blackbuffalo/
+x-enrichment:
+  date: '2026-08-07'
+  status: enriched
+  artifacts_added: 27
+  pass: local-v1
+x-coverage:
+  state: covered
+  reason: null
+  detail: >-
+    Contract discovery succeeded. Black Buffalo runs no developer program and publishes
+    no OpenAPI, but three machine-readable surfaces answered anonymously from its own
+    domain — Storefront GraphQL introspection, an MCP server at /api/mcp and a UCP
+    commerce MCP server at /api/ucp/mcp whose tools/list returned all thirteen tools
+    including complete_checkout.
+  evidence:
+  - url: https://blackbuffalo.com/api/2026-04/graphql.json
+    status: 200
+  - url: https://blackbuffalo.com/api/ucp/mcp
+    status: 200
+  - url: https://blackbuffalo.com/api/mcp
+    status: 200
+  - url: https://blackbuffalo.com/.well-known/ucp
+    status: 200
+  - url: https://blackbuffalo.com/openapi.json
+    status: 404
+  checked: '2026-08-07'
