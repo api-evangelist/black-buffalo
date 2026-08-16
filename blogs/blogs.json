@@ -1,0 +1,14 @@
+{
+  "repo": "black-buffalo",
+  "feeds": [
+    {
+      "source": "https://blackbuffalo.com/pages/faq",
+      "feed_url": "https://blackbuffalo.com/pages/faq",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "post_count": 0,
+  "fetched": "2026-08-15T12:22:01Z"
+}
