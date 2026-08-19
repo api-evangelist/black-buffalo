@@ -2,13 +2,11 @@ generated: '2026-08-07'
 method: searched
 status: published
 source: https://blackbuffalo.com/api/ucp/mcp
-description: >-
-  Black Buffalo serves TWO live MCP endpoints from its own storefront host, and — unlike
-  most Shopify merchants profiled in this catalog — BOTH answer an anonymous JSON-RPC
-  tools/list with HTTP 200 and full JSON Schema input contracts. The Shopify Storefront
-  MCP server at /api/mcp returned five read/cart tools. The Universal Commerce Protocol
-  MCP server at /api/ucp/mcp returned thirteen tools covering the entire
-  catalog → cart → checkout → completed-order lifecycle, including complete_checkout.
+description: Black Buffalo serves TWO live MCP endpoints from its own storefront host, and — unlike most
+  Shopify merchants profiled in this catalog — BOTH answer an anonymous JSON-RPC tools/list with HTTP
+  200 and full JSON Schema input contracts. The Shopify Storefront MCP server at /api/mcp returned five
+  read/cart tools. The Universal Commerce Protocol MCP server at /api/ucp/mcp returned thirteen tools
+  covering the entire catalog → cart → checkout → completed-order lifecycle, including complete_checkout.
   Only resources/list and prompts/list are gated behind a UCP agent profile URI.
 servers:
 - name: black-buffalo-ucp-mcp
@@ -22,16 +20,17 @@ servers:
     version: 0.1.0
   spec: https://ucp.dev/2026-04-08/specification/overview/
   schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json
-  auth: >-
-    none observed for tools/list — an anonymous POST returned 200 with all thirteen
-    tools. resources/list and prompts/list return JSON-RPC error -32001 "UCP discovery
-    failed" / invalid_profile_url ("Missing profile uri"), so those two methods require
-    a resolvable UCP agent profile. Tool INVOCATION also requires the meta["ucp-agent"]
-    .profile URI, which is a required property on every one of the thirteen tools.
+  auth: none observed for tools/list — an anonymous POST returned 200 with all thirteen tools. resources/list
+    and prompts/list return JSON-RPC error -32001 "UCP discovery failed" / invalid_profile_url ("Missing
+    profile uri"), so those two methods require a resolvable UCP agent profile. Tool INVOCATION also requires
+    the meta["ucp-agent"] .profile URI, which is a required property on every one of the thirteen tools.
   capabilities:
-    tools: {listChanged: true}
-    prompts: {listChanged: true}
-    resources: {listChanged: true}
+    tools:
+      listChanged: true
+    prompts:
+      listChanged: true
+    resources:
+      listChanged: true
     logging: {}
   tools_list:
     verified: '2026-08-07'
@@ -52,144 +51,196 @@ servers:
     tool_count: 5
     file: black-buffalo-storefront-mcp-tools.json
   vendor: Shopify Storefront MCP
-  note: >-
-    search_catalog on this server documents that its response "conforms to the UCP
-    catalog search capability (dev.ucp.shopping.catalog.search)" — the two servers are
-    overlapping projections of one commerce core, not independent APIs.
+  note: search_catalog on this server documents that its response "conforms to the UCP catalog search
+    capability (dev.ucp.shopping.catalog.search)" — the two servers are overlapping projections of one
+    commerce core, not independent APIs.
 tools:
 - name: search_catalog
   server: black-buffalo-ucp-mcp
   category: catalog
-  description: >-
-    Search for products from the online store using natural language queries, specific
-    filter criteria, or both; at least one of query or filters must be provided. Results
-    are paginated — use pagination.cursor to fetch further pages. The response conforms
-    to dev.ucp.shopping.catalog.search.
-  input_properties: [meta, catalog]
-  required: [meta, catalog]
+  description: Search for products from the online store using natural language queries, specific filter
+    criteria, or both; at least one of query or filters must be provided. Results are paginated — use
+    pagination.cursor to fetch further pages. The response conforms to dev.ucp.shopping.catalog.search.
+  input_properties:
+  - meta
+  - catalog
+  required:
+  - meta
+  - catalog
 - name: lookup_catalog
   server: black-buffalo-ucp-mcp
   category: catalog
-  description: >-
-    Resolve multiple product or variant identifiers in one request. Accepts Product IDs
-    (gid://shopify/Product/...) and Variant IDs (gid://shopify/ProductVariant/...);
-    results are grouped by product and each variant carries an inputs array showing
-    which identifier matched it.
-  input_properties: [meta, catalog]
-  required: [meta, catalog]
+  description: Resolve multiple product or variant identifiers in one request. Accepts Product IDs (gid://shopify/Product/...)
+    and Variant IDs (gid://shopify/ProductVariant/...); results are grouped by product and each variant
+    carries an inputs array showing which identifier matched it.
+  input_properties:
+  - meta
+  - catalog
+  required:
+  - meta
+  - catalog
 - name: get_product
   server: black-buffalo-ucp-mcp
   category: catalog
-  description: >-
-    Retrieve complete product detail by identifier — one product with a relevant set of
-    variants, exact pricing and real-time availability. Supports interactive option
-    selection through the selected and preferences parameters for variant narrowing.
-  input_properties: [meta, catalog]
-  required: [meta, catalog]
+  description: Retrieve complete product detail by identifier — one product with a relevant set of variants,
+    exact pricing and real-time availability. Supports interactive option selection through the selected
+    and preferences parameters for variant narrowing.
+  input_properties:
+  - meta
+  - catalog
+  required:
+  - meta
+  - catalog
 - name: create_cart
   server: black-buffalo-ucp-mcp
   category: cart
   description: Creates a new cart.
-  input_properties: [meta, cart]
-  required: [meta, cart]
+  input_properties:
+  - meta
+  - cart
+  required:
+  - meta
+  - cart
 - name: get_cart
   server: black-buffalo-ucp-mcp
   category: cart
   description: Get the cart contents.
-  input_properties: [meta, id]
-  required: [meta, id]
+  input_properties:
+  - meta
+  - id
+  required:
+  - meta
+  - id
 - name: update_cart
   server: black-buffalo-ucp-mcp
   category: cart
   description: Perform updates to a cart.
-  input_properties: [meta, cart, id]
-  required: [meta, cart, id]
+  input_properties:
+  - meta
+  - cart
+  - id
+  required:
+  - meta
+  - cart
+  - id
 - name: cancel_cart
   server: black-buffalo-ucp-mcp
   category: cart
   description: Cancels a cart.
-  input_properties: [meta, id]
-  required: [meta, id]
+  input_properties:
+  - meta
+  - id
+  required:
+  - meta
+  - id
 - name: create_checkout
   server: black-buffalo-ucp-mcp
   category: checkout
-  description: >-
-    Creates a checkout. Returns checkout details including line items, totals, and any
-    applicable discounts or taxes. The checkout object accepts payment.instruments with
-    billing_address and an opaque credential token (card or wallet).
-  input_properties: [meta, checkout]
-  required: [meta, checkout]
+  description: Creates a checkout. Returns checkout details including line items, totals, and any applicable
+    discounts or taxes. The checkout object accepts payment.instruments with billing_address and an opaque
+    credential token (card or wallet).
+  input_properties:
+  - meta
+  - checkout
+  required:
+  - meta
+  - checkout
 - name: get_checkout
   server: black-buffalo-ucp-mcp
   category: checkout
-  description: >-
-    Returns details about the checkout, including line items, totals, and any applicable
-    discounts or taxes. The id is a Shopify global id of the form
-    gid://shopify/Checkout/abc123.
-  input_properties: [meta, id]
-  required: [meta, id]
+  description: Returns details about the checkout, including line items, totals, and any applicable discounts
+    or taxes. The id is a Shopify global id of the form gid://shopify/Checkout/abc123.
+  input_properties:
+  - meta
+  - id
+  required:
+  - meta
+  - id
 - name: update_checkout
   server: black-buffalo-ucp-mcp
   category: checkout
   description: Updates a checkout and returns the recalculated checkout details.
-  input_properties: [meta, checkout, id]
-  required: [meta, checkout, id]
+  input_properties:
+  - meta
+  - checkout
+  - id
+  required:
+  - meta
+  - checkout
+  - id
 - name: complete_checkout
   server: black-buffalo-ucp-mcp
   category: checkout
   consequence: irreversible-purchase
-  description: >-
-    Completes a checkout and returns the checkout result — order ID, Thank You Page URL,
-    or any errors encountered. This is the money-moving tool.
-  input_properties: [meta, checkout, id]
-  required: [meta, id, checkout]
-  human_approval_required: >-
-    Yes. Black Buffalo's own /robots.txt states "Checkouts are for humans" and forbids
-    any agent flow that finalizes payment without an explicit, contemporaneous human
-    approval step. See agentic-access/black-buffalo-agentic-access.yml.
+  description: Completes a checkout and returns the checkout result — order ID, Thank You Page URL, or
+    any errors encountered. This is the money-moving tool.
+  input_properties:
+  - meta
+  - checkout
+  - id
+  required:
+  - meta
+  - id
+  - checkout
+  human_approval_required: Yes. Black Buffalo's own /robots.txt states "Checkouts are for humans" and
+    forbids any agent flow that finalizes payment without an explicit, contemporaneous human approval
+    step. See agentic-access/black-buffalo-agentic-access.yml.
 - name: cancel_checkout
   server: black-buffalo-ucp-mcp
   category: checkout
   description: Cancels a checkout.
-  input_properties: [meta, id]
-  required: [meta, id]
+  input_properties:
+  - meta
+  - id
+  required:
+  - meta
+  - id
 - name: get_order
   server: black-buffalo-ucp-mcp
   category: order
   description: Get the details of an order.
-  input_properties: [meta, id]
-  required: [meta, id]
+  input_properties:
+  - meta
+  - id
+  required:
+  - meta
+  - id
 - name: search_catalog
   server: black-buffalo-storefront-mcp
   category: catalog
-  description: >-
-    Search for products from the online store using natural language queries, filters,
-    or both. Paginated; response conforms to dev.ucp.shopping.catalog.search.
-  input_properties: [meta, catalog]
+  description: Search for products from the online store using natural language queries, filters, or both.
+    Paginated; response conforms to dev.ucp.shopping.catalog.search.
+  input_properties:
+  - meta
+  - catalog
   required: []
 - name: get_product_details
   server: black-buffalo-storefront-mcp
   category: catalog
-  description: >-
-    Look up a product by ID. Pass options to select a specific variant for the product
-    card; without options the first available variant is returned.
-  input_properties: [product_id, options, country, language]
-  required: [product_id]
+  description: Look up a product by ID. Pass options to select a specific variant for the product card;
+    without options the first available variant is returned.
+  input_properties:
+  - product_id
+  - options
+  - country
+  - language
+  required:
+  - product_id
 - name: get_cart
   server: black-buffalo-storefront-mcp
   category: cart
-  description: >-
-    Get the cart including items, shipping options, discount info and checkout url for a
-    given cart id.
-  input_properties: [cart_id]
-  required: [cart_id]
+  description: Get the cart including items, shipping options, discount info and checkout url for a given
+    cart id.
+  input_properties:
+  - cart_id
+  required:
+  - cart_id
 - name: update_cart
   server: black-buffalo-storefront-mcp
   category: cart
-  description: >-
-    Consolidated cart mutation — add/remove/update line items, buyer information,
-    delivery addresses, selected delivery options, discount codes, gift cards and notes
-    in one call. When creating a new cart only add_items is required.
+  description: Consolidated cart mutation — add/remove/update line items, buyer information, delivery
+    addresses, selected delivery options, discount codes, gift cards and notes in one call. When creating
+    a new cart only add_items is required.
   input_properties:
   - cart_id
   - add_items
@@ -206,11 +257,13 @@ tools:
 - name: search_shop_policies_and_faqs
   server: black-buffalo-storefront-mcp
   category: policy
-  description: >-
-    Get facts about the store's policies, products or services — return policy, shipping
-    policy, phone number, hours of operation.
-  input_properties: [query, context]
-  required: [query]
+  description: Get facts about the store's policies, products or services — return policy, shipping policy,
+    phone number, hours of operation.
+  input_properties:
+  - query
+  - context
+  required:
+  - query
 discovery:
   llms_txt: https://blackbuffalo.com/llms.txt
   agents_md: https://blackbuffalo.com/agents.md
@@ -228,15 +281,23 @@ x-evidence:
   url: https://blackbuffalo.com/api/ucp/mcp
   method: POST initialize
   http_status: 200
-  result: 'protocolVersion 2025-06-18; serverInfo universal-commerce 0.1.0'
+  result: protocolVersion 2025-06-18; serverInfo universal-commerce 0.1.0
 - fetched: '2026-08-07'
   url: https://blackbuffalo.com/api/ucp/mcp
   method: POST resources/list
   http_status: 200
-  result: 'JSON-RPC error -32001 UCP discovery failed (invalid_profile_url)'
+  result: JSON-RPC error -32001 UCP discovery failed (invalid_profile_url)
 - fetched: '2026-08-07'
   url: https://blackbuffalo.com/api/mcp
   method: POST tools/list
   http_status: 200
   content_type: application/json
   result: 5 tools with inputSchema
+deployment:
+  mode: remote
+  endpoint: https://blackbuffalo.com/api/ucp/mcp
+  verified: probed
+  probe: live
+  tools: 13
+  checked: '2026-08-12'
+  source: catalog MCP census
