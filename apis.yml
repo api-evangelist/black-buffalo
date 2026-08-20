@@ -27,6 +27,19 @@ tags:
 - Consumer Packaged Goods
 - Nicotine Pouches
 - Smokeless Tobacco Alternative
+- E-Commerce
+- Direct to Consumer
+- Retail
+- Agentic Commerce
+- Shopify
+- GraphQL
+- MCP
+- Universal Commerce Protocol
+tags_raw:
+- Company
+- Consumer Packaged Goods
+- Nicotine Pouches
+- Smokeless Tobacco Alternative
 - Ecommerce
 - Direct to Consumer
 - Retail
@@ -48,6 +61,11 @@ apis:
   baseURL: https://blackbuffalo.com/api/2026-04/graphql.json
   tags:
   - GraphQL
+  - E-Commerce
+  - Catalog
+  - Cart
+  tags_raw:
+  - GraphQL
   - Ecommerce
   - Catalog
   - Cart
@@ -68,6 +86,10 @@ apis:
   humanURL: https://blackbuffalo.com/agents.md
   baseURL: https://blackbuffalo.com/api/mcp
   tags:
+  - MCP
+  - Agents
+  - E-Commerce
+  tags_raw:
   - MCP
   - Agents
   - Ecommerce
