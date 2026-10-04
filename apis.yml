@@ -101,6 +101,9 @@ apis:
     url: graphql/black-buffalo-graphql.yml
   - type: DataModel
     url: data-model/black-buffalo-data-model.yml
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: storefront-graphql
 - aid: black-buffalo:storefront-mcp
   name: Black Buffalo Storefront MCP Server
   description: >-
@@ -123,6 +126,9 @@ apis:
     url: mcp/black-buffalo-mcp.yml
   - type: ToolCrosswalk
     url: mcp/black-buffalo-tool-crosswalk.yml
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: storefront-mcp
 - aid: black-buffalo:ucp-commerce
   name: Black Buffalo UCP Agentic Commerce API
   description: >-
@@ -150,6 +156,9 @@ apis:
     url: mcp/black-buffalo-mcp.yml
   - type: AgenticAccess
     url: agentic-access/black-buffalo-agentic-access.yml
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: ucp
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
