@@ -46,7 +46,7 @@ accessModel:
 image: https://cdn.shopify.com/s/files/1/2258/8521/files/Black-Buffalo-Social-Sharing-Image.jpg?v=1738521407
 specificationVersion: '0.23'
 created: '2026-08-07'
-modified: '2026-08-07'
+modified: '2026-10-06'
 tags:
 - Company
 - Consumer Packaged Goods
@@ -165,6 +165,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- url: https://blackbuffalo.com/blogs/stories.atom
+  type: BlogRSS
 - type: Website
   url: https://blackbuffalo.com/
 - type: Documentation
