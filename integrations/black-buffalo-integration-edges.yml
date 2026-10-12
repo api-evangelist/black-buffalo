@@ -1,0 +1,16 @@
+generated: '2026-10-12'
+method: none
+source:
+- https://zapier.com/apps/black-buffalo/integrations
+- https://n8n.io/integrations/black-buffalo/
+- https://composio.dev/toolkits/black-buffalo
+- https://monid.ai/tools/black-buffalo
+checked:
+- https://composio.dev/toolkits/black-buffalo
+- https://monid.ai/tools/black-buffalo
+- https://n8n.io/integrations/black-buffalo/
+- https://zapier.com/apps/black-buffalo/integrations
+summary: null
+marketplace_apps: []
+edges: []
+templates: []
